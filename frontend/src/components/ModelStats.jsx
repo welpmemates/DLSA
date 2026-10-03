@@ -1,72 +1,124 @@
+const modelDetails = [
+  {
+    label: "Architecture",
+    value: "Bidirectional LSTM",
+  },
+  {
+    label: "Dataset",
+    value: "IMDB Movie Reviews",
+  },
+  {
+    label: "Task",
+    value: "Binary Classification",
+  },
+  {
+    label: "Embedding",
+    value: "20 dimensions",
+  },
+  {
+    label: "LSTM Hidden Size",
+    value: "64",
+  },
+  {
+    label: "Bidirectional",
+    value: "Yes",
+  },
+  {
+    label: "Training Epochs",
+    value: "10",
+  },
+  {
+    label: "Batch Size",
+    value: "64",
+  },
+  {
+    label: "Optimizer",
+    value: "Adam",
+  },
+  {
+    label: "Learning Rate",
+    value: "0.002",
+  },
+  {
+    label: "Loss Function",
+    value: "BCELoss",
+  },
+  {
+    label: "Maximum Length",
+    value: "300 tokens",
+  },
+];
+
 function ModelStats() {
   return (
-    <section className="model-section" id="model">
-      <div className="section-heading centered">
-        <span className="eyebrow">THE MODEL</span>
+    <section
+      className="model-section"
+      id="model"
+    >
+      <div className="model-section-header">
+        <div>
+          <span className="eyebrow">
+            MODEL DETAILS
+          </span>
 
-        <h2>Bidirectional LSTM</h2>
+          <h2>
+            What powers the analyzer?
+          </h2>
 
-        <p>
-          A recurrent neural network trained to understand the sentiment
-          expressed in movie reviews.
-        </p>
-      </div>
-
-      <div className="stats-grid">
-        <div className="stat-card">
-          <span className="stat-label">ARCHITECTURE</span>
-          <strong>BiLSTM</strong>
-          <span>Bidirectional LSTM</span>
+          <p>
+            The sentiment classifier is a
+            PyTorch Bidirectional LSTM trained
+            on the IMDB movie review dataset.
+          </p>
         </div>
 
-        <div className="stat-card">
-          <span className="stat-label">EMBEDDING</span>
-          <strong>20</strong>
-          <span>Embedding dimensions</span>
-        </div>
+        <div className="accuracy-card">
+          <span>TEST ACCURACY</span>
 
-        <div className="stat-card">
-          <span className="stat-label">LSTM HIDDEN</span>
-          <strong>64</strong>
-          <span>Hidden units per direction</span>
-        </div>
-
-        <div className="stat-card highlight">
-          <span className="stat-label">TEST ACCURACY</span>
           <strong>82.91%</strong>
-          <span>On held-out IMDB test set</span>
+
+          <small>
+            25,000 test reviews
+          </small>
         </div>
       </div>
 
-      <div className="technical-grid">
-        <div>
-          <span>Training Epochs</span>
-          <strong>10</strong>
+      <div className="model-grid">
+        {modelDetails.map((detail) => (
+          <div
+            className="model-detail-card"
+            key={detail.label}
+          >
+            <span>{detail.label}</span>
+
+            <strong>
+              {detail.value}
+            </strong>
+          </div>
+        ))}
+      </div>
+
+      <div className="model-explanation">
+        <div
+          className="explanation-icon"
+          aria-hidden="true"
+        >
+          ↔
         </div>
 
         <div>
-          <span>Batch Size</span>
-          <strong>64</strong>
-        </div>
+          <h3>
+            Why Bidirectional LSTM?
+          </h3>
 
-        <div>
-          <span>Optimizer</span>
-          <strong>Adam</strong>
-        </div>
-
-        <div>
-          <span>Learning Rate</span>
-          <strong>0.002</strong>
-        </div>
-
-        <div>
-          <span>Loss Function</span>
-          <strong>BCELoss</strong>
-        </div>
-
-        <div>
-          <span>Maximum Length</span>
-          <strong>300</strong>
+          <p>
+            The model processes each review in
+            both forward and backward directions.
+            This allows it to use information from
+            both earlier and later words when
+            building a representation of the
+            review.
+          </p>
         </div>
       </div>
     </section>

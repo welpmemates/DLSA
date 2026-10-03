@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import "./App.css";
 
@@ -12,7 +12,8 @@ import Footer from "./components/Footer";
 
 import { exampleReviews } from "./data/examples";
 
-const API_URL = "http://localhost:8000";
+const API_URL =
+  import.meta.env.VITE_API_URL || "http://localhost:8000";
 
 function App() {
   const [review, setReview] = useState("");
@@ -20,11 +21,40 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [history, setHistory] = useState([]);
+  const [apiStatus, setApiStatus] = useState("checking");
+
+  useEffect(() => {
+    const checkApiHealth = async () => {
+      try {
+        const response = await fetch(`${API_URL}/health`);
+
+        if (!response.ok) {
+          throw new Error("API health check failed.");
+        }
+
+        const data = await response.json();
+
+        setApiStatus(
+          data.model_loaded ? "ready" : "offline"
+        );
+      } catch {
+        setApiStatus("offline");
+      }
+    };
+
+    checkApiHealth();
+  }, []);
 
   const handleExample = (type) => {
     setReview(exampleReviews[type]);
     setResult(null);
     setError("");
+
+    window.scrollTo({
+      top:
+        document.getElementById("analyzer")?.offsetTop - 90 || 0,
+      behavior: "smooth",
+    });
   };
 
   const handleClearHistory = () => {
@@ -37,13 +67,16 @@ function App() {
     setError("");
 
     window.scrollTo({
-      top: document.getElementById("analyzer")?.offsetTop - 90,
+      top:
+        document.getElementById("analyzer")?.offsetTop - 90 || 0,
       behavior: "smooth",
     });
   };
 
   const handleAnalyze = async () => {
-    if (!review.trim()) {
+    const trimmedReview = review.trim();
+
+    if (!trimmedReview || loading) {
       return;
     }
 
@@ -58,7 +91,7 @@ function App() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          review: review.trim(),
+          review: trimmedReview,
         }),
       });
 
@@ -79,10 +112,13 @@ function App() {
 
       const prediction = {
         ...data,
-        review: review.trim(),
+        review: trimmedReview,
         id: Date.now(),
-        time: "Just now",
-      }
+        time: new Date().toLocaleTimeString([], {
+          hour: "numeric",
+          minute: "2-digit",
+        }),
+      };
 
       setResult(prediction);
 
@@ -107,7 +143,9 @@ function App() {
       <main>
         <section className="hero">
           <div className="hero-content">
-            <span className="eyebrow">MACHINE LEARNING • NLP</span>
+            <span className="eyebrow">
+              MACHINE LEARNING • NLP
+            </span>
 
             <h1>
               Understand the sentiment
@@ -116,21 +154,29 @@ function App() {
             </h1>
 
             <p>
-              A Bidirectional LSTM trained on the IMDB movie review dataset
-              to classify reviews as positive or negative.
+              A Bidirectional LSTM trained on the IMDB movie review
+              dataset to classify reviews as positive or negative.
             </p>
 
-            <a href="#analyzer" className="hero-button">
+            <a
+              href="#analyzer"
+              className="hero-button"
+            >
               Try the analyzer
               <span>↓</span>
             </a>
           </div>
 
-          <div className="hero-visual">
+          <div
+            className="hero-visual"
+            aria-hidden="true"
+          >
             <div className="neural-card">
               <div className="neural-header">
                 <span>BiLSTM</span>
-                <span className="live-indicator">LIVE</span>
+                <span className="live-indicator">
+                  LIVE
+                </span>
               </div>
 
               <div className="neural-network">
@@ -172,6 +218,7 @@ function App() {
           onAnalyze={handleAnalyze}
           onExample={handleExample}
           loading={loading}
+          apiStatus={apiStatus}
         />
 
         <PredictionResult

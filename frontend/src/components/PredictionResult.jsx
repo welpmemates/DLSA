@@ -1,13 +1,30 @@
 function PredictionResult({ result, error }) {
   if (error) {
     return (
-      <section className="prediction-section">
-        <div className="error-card">
-          <div className="error-icon">!</div>
+      <section
+        className="prediction-section"
+        aria-live="assertive"
+      >
+        <div
+          className="error-card"
+          role="alert"
+        >
+          <div
+            className="error-icon"
+            aria-hidden="true"
+          >
+            !
+          </div>
 
           <div>
-            <span className="eyebrow">ANALYSIS ERROR</span>
-            <h3>Unable to analyze review</h3>
+            <span className="eyebrow">
+              ANALYSIS ERROR
+            </span>
+
+            <h3>
+              Unable to analyze review
+            </h3>
+
             <p>{error}</p>
           </div>
         </div>
@@ -17,13 +34,25 @@ function PredictionResult({ result, error }) {
 
   if (!result) {
     return (
-      <section className="prediction-section">
+      <section
+        className="prediction-section"
+        aria-live="polite"
+      >
         <div className="prediction-placeholder">
-          <div className="placeholder-icon">◎</div>
+          <div
+            className="placeholder-icon"
+            aria-hidden="true"
+          >
+            ◎
+          </div>
 
-          <span className="eyebrow">WAITING FOR INPUT</span>
+          <span className="eyebrow">
+            WAITING FOR INPUT
+          </span>
 
-          <h3>Your prediction will appear here</h3>
+          <h3>
+            Your prediction will appear here
+          </h3>
 
           <p>
             Enter a movie review above and click{" "}
@@ -47,26 +76,37 @@ function PredictionResult({ result, error }) {
     result.sentiment === "Positive";
 
   return (
-    <section className="prediction-section">
+    <section
+      className="prediction-section"
+      aria-live="polite"
+    >
       <div
         className={`prediction-card ${
-          isPositive ? "result-positive" : "result-negative"
+          isPositive
+            ? "result-positive"
+            : "result-negative"
         }`}
       >
-        {/* Header */}
         <div className="prediction-header">
           <div>
-            <span className="eyebrow">MODEL PREDICTION</span>
+            <span className="eyebrow">
+              MODEL PREDICTION
+            </span>
 
             <h2>Sentiment Result</h2>
           </div>
 
           <div
             className={`sentiment-badge ${
-              isPositive ? "positive" : "negative"
+              isPositive
+                ? "positive"
+                : "negative"
             }`}
           >
-            <span className="sentiment-icon">
+            <span
+              className="sentiment-icon"
+              aria-hidden="true"
+            >
               {isPositive ? "✓" : "×"}
             </span>
 
@@ -74,16 +114,20 @@ function PredictionResult({ result, error }) {
           </div>
         </div>
 
-        {/* Main result */}
         <div className="prediction-main">
           <div className="confidence-display">
             <div
               className={`confidence-ring ${
-                isPositive ? "positive-ring" : "negative-ring"
+                isPositive
+                  ? "positive-ring"
+                  : "negative-ring"
               }`}
               style={{
                 "--confidence": `${confidence * 3.6}deg`,
               }}
+              aria-label={`${confidence.toFixed(
+                1
+              )}% confidence`}
             >
               <div className="confidence-ring-inner">
                 <strong>
@@ -97,18 +141,31 @@ function PredictionResult({ result, error }) {
 
           <div className="probability-panel">
             <div className="probability-heading">
-              <span>Prediction probability</span>
+              <span>
+                Prediction probability
+              </span>
 
               <span>0 — 100%</span>
             </div>
 
-            <div className="probability-bar large">
+            <div
+              className="probability-bar large"
+              role="img"
+              aria-label={`Negative ${negativeProbability.toFixed(
+                2
+              )} percent, Positive ${positiveProbability.toFixed(
+                2
+              )} percent`}
+            >
               <div
-                className={`probability-fill ${
-                  isPositive
-                    ? "positive-fill"
-                    : "negative-fill"
-                }`}
+                className="probability-segment negative-segment"
+                style={{
+                  width: `${negativeProbability}%`,
+                }}
+              ></div>
+
+              <div
+                className="probability-segment positive-segment"
                 style={{
                   width: `${positiveProbability}%`,
                 }}
@@ -117,23 +174,37 @@ function PredictionResult({ result, error }) {
 
             <div className="probability-values">
               <div>
-                <span className="probability-dot negative-dot"></span>
+                <span
+                  className="probability-dot negative-dot"
+                  aria-hidden="true"
+                ></span>
 
                 <div>
                   <span>Negative</span>
+
                   <strong>
-                    {negativeProbability.toFixed(2)}%
+                    {negativeProbability.toFixed(
+                      2
+                    )}
+                    %
                   </strong>
                 </div>
               </div>
 
               <div>
-                <span className="probability-dot positive-dot"></span>
+                <span
+                  className="probability-dot positive-dot"
+                  aria-hidden="true"
+                ></span>
 
                 <div>
                   <span>Positive</span>
+
                   <strong>
-                    {positiveProbability.toFixed(2)}%
+                    {positiveProbability.toFixed(
+                      2
+                    )}
+                    %
                   </strong>
                 </div>
               </div>
@@ -141,27 +212,31 @@ function PredictionResult({ result, error }) {
           </div>
         </div>
 
-        {/* Review */}
         <div className="analyzed-review">
           <div className="review-heading">
             <span>ANALYZED REVIEW</span>
 
-            <span className="review-check">✓ Analyzed</span>
+            <span className="review-check">
+              ✓ Analyzed
+            </span>
           </div>
 
           <p>"{result.review}"</p>
         </div>
 
-        {/* Model metadata */}
         <div className="result-metadata">
           <div>
             <span>MODEL</span>
-            <strong>Bidirectional LSTM</strong>
+            <strong>
+              Bidirectional LSTM
+            </strong>
           </div>
 
           <div>
             <span>TASK</span>
-            <strong>Binary Classification</strong>
+            <strong>
+              Binary Classification
+            </strong>
           </div>
 
           <div>
