@@ -10,7 +10,7 @@ IMDB -> tokenization -> vocabulary -> padded sequences -> embedding -> BiLSTM ->
 
 # 1. IMPORTS
 import re
-from collections import Counter, OrderedDict
+from collections import Counter
 
 import torch
 import torch.nn as nn
