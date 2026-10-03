@@ -14,10 +14,8 @@ from collections import Counter, OrderedDict
 
 import torch
 import torch.nn as nn
-import torchtext
 from torch.utils.data import DataLoader, random_split
-from torchtext.datasets import IMDB
-from torchtext.vocab import vocab
+from datasets import load_dataset
 
 # 2. REPRODUCIBILITY AND DEVICE
 SEED = 1
@@ -31,14 +29,19 @@ if DEVICE.type == "cpu":
 print(f"Using device: {DEVICE}")
 
 # 3. LOAD THE IMDB DATASET
-train_dataset = IMDB(split="train")
-test_dataset = IMDB(split="test")
+# Load IMDB without TorchText/TorchData.
+imdb = load_dataset("stanfordnlp/imdb")
 
-# Materialize the datasets so that they can be split/iterated over.
-train_dataset = list(train_dataset)
-test_dataset = list(test_dataset)
+train_dataset = [
+    (item["label"], item["text"])
+    for item in imdb["train"]
+]
 
-# 20,000 training samples and 5,000 validation samples.
+test_dataset = [
+    (item["label"], item["text"])
+    for item in imdb["test"]
+]
+
 train_dataset, valid_dataset = random_split(
     train_dataset,
     [20_000, 5_000],
@@ -48,6 +51,7 @@ train_dataset, valid_dataset = random_split(
 print(f"Training samples:   {len(train_dataset)}")
 print(f"Validation samples: {len(valid_dataset)}")
 print(f"Test samples:       {len(test_dataset)}")
+
 
 # 4. TEXT PREPROCESSING AND TOKENIZATION
 def tokenizer(text):
@@ -80,43 +84,38 @@ for label, review in train_dataset:
 
 print(f"Vocabulary size before special tokens: {len(token_counts)}")
 
+PAD_TOKEN = "<pad>"
+UNK_TOKEN = "<unk>"
+
 sorted_tokens = sorted(
     token_counts.items(),
     key=lambda item: item[1],
     reverse=True
 )
 
-ordered_dict = OrderedDict(sorted_tokens)
+# Plain Python dictionary replaces torchtext.vocab.
+vocab = {
+    PAD_TOKEN: 0,
+    UNK_TOKEN: 1,
+}
 
-vocab = vocab(ordered_dict)
-
-# Special tokens
-vocab.insert_token("<pad>", 0)
-vocab.insert_token("<unk>", 1)
-vocab.set_default_index(1)
+for token, _ in sorted_tokens:
+    if token not in vocab:
+        vocab[token] = len(vocab)
 
 print(f"Final vocabulary size: {len(vocab)}")
+
 
 # 6. TEXT AND LABEL PIPELINES
 def text_pipeline(text):
     """Convert a review into a sequence of vocabulary indices."""
-    return [vocab[token] for token in tokenizer(text)]
+    return [vocab.get(token, vocab[UNK_TOKEN]) for token in tokenizer(text)]
 
 
-# torchtext changed the label representation across versions.
-if hasattr(torchtext, "__version__"):
-    from packaging.version import parse
+def label_pipeline(label):
+    """Convert an IMDB label (0/1) to a float."""
+    return float(label)
 
-    if parse(torchtext.__version__) > parse("0.10"):
-        def label_pipeline(label):
-            return 1.0 if label == 2 else 0.0
-    else:
-        def label_pipeline(label):
-            return 1.0 if label == "pos" else 0.0
-else:
-    # Fallback for environments where version metadata is unavailable.
-    def label_pipeline(label):
-        return 1.0 if label in (2, "pos") else 0.0
 
 # 7. BATCH PREPARATION
 def collate_batch(batch):
@@ -407,7 +406,6 @@ print("-------------------")
 
 for review in examples:
     sentiment, probability = predict_sentiment(review)
-
     print(f"\nReview: {review}")
     print(f"Sentiment: {sentiment}")
     print(f"Positive probability: {probability:.4f}")
