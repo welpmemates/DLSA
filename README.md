@@ -413,22 +413,6 @@ It should therefore be treated as a demonstration of sentiment classification ra
 
 ---
 
-## Possible Improvements
-
-Some possible future improvements include:
-
-- Using pretrained word embeddings.
-- Increasing the embedding dimension.
-- Experimenting with larger LSTM hidden sizes.
-- Using dropout for regularization.
-- Comparing LSTM, GRU, and Transformer architectures.
-- Adding precision, recall, and F1-score evaluation.
-- Generating a confusion matrix.
-- Building a web interface for interactive predictions.
-- Comparing the BiLSTM against traditional machine-learning approaches.
-
----
-
 ## Technologies Used
 
 - **Python**
