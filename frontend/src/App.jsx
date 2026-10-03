@@ -5,6 +5,7 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import Analyzer from "./components/Analyzer";
 import PredictionResult from "./components/PredictionResult";
+import PredictionHistory from "./components/PredictionHistory";
 import ModelStats from "./components/ModelStats";
 import Pipeline from "./components/Pipeline";
 import Footer from "./components/Footer";
@@ -18,11 +19,27 @@ function App() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+  const [history, setHistory] = useState([]);
 
   const handleExample = (type) => {
     setReview(exampleReviews[type]);
     setResult(null);
     setError("");
+  };
+
+  const handleClearHistory = () => {
+    setHistory([]);
+  };
+
+  const handleSelectHistory = (item) => {
+    setReview(item.review);
+    setResult(item);
+    setError("");
+
+    window.scrollTo({
+      top: document.getElementById("analyzer")?.offsetTop - 90,
+      behavior: "smooth",
+    });
   };
 
   const handleAnalyze = async () => {
@@ -60,10 +77,19 @@ function App() {
 
       const data = await response.json();
 
-      setResult({
+      const prediction = {
         ...data,
         review: review.trim(),
-      });
+        id: Date.now(),
+        time: "Just now",
+      }
+
+      setResult(prediction);
+
+      setHistory((previousHistory) => [
+        prediction,
+        ...previousHistory,
+      ]);
     } catch (err) {
       setError(
         err.message ||
@@ -151,6 +177,12 @@ function App() {
         <PredictionResult
           result={result}
           error={error}
+        />
+
+        <PredictionHistory
+          history={history}
+          onClear={handleClearHistory}
+          onSelect={handleSelectHistory}
         />
 
         <ModelStats />
