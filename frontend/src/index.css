@@ -1,25 +1,133 @@
-html,
-body,
-#root {
-  min-height: 100%;
+@import url("https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;600;700&display=swap");
+
+/* =========================================================
+   DESIGN TOKENS
+   ========================================================= */
+
+:root {
+  /* Surfaces */
+  --bg: #f5f7fb;
+  --surface: #ffffff;
+  --surface-soft: #f8f9fc;
+
+  /* Text */
+  --ink: #111827;
+  --ink-soft: #475467;
+  --muted: #7b8494;
+
+  /* Borders */
+  --border: #e5e9f0;
+  --border-dark: #d7dce5;
+
+  /* Brand */
+  --navy: #111827;
+  --navy-2: #1a2233;
+  --purple: #6d5dfc;
+  --purple-dark: #5848e8;
+  --purple-soft: #eeebff;
+
+  /* Status */
+  --green: #19a974;
+  --green-light: #55d5a3;
+  --green-dark: #16865d;
+  --green-soft: #e7f8f1;
+  --green-border: #d8eee5;
+
+  --red: #e05252;
+  --red-light: #f48a8a;
+  --red-dark: #c34242;
+  --red-soft: #fcecec;
+  --red-border: #f0cccc;
+
+  --grad-green: linear-gradient(90deg, var(--green), var(--green-light));
+  --grad-red: linear-gradient(90deg, var(--red), var(--red-light));
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(17, 24, 39, 0.04);
+  --shadow: 0 15px 45px rgba(17, 24, 39, 0.08);
+  --shadow-lg: 0 25px 70px rgba(17, 24, 39, 0.12);
+  --shadow-hover: 0 12px 30px rgba(17, 24, 39, 0.07);
+
+  /* Typography */
+  --font-body: "DM Sans", system-ui, sans-serif;
+  --font-display: "Space Grotesk", sans-serif;
+
+  /* Layout */
+  --container: 1180px;
+  --gutter: 48px;
+  --nav-height: 72px;
+  --section-space: 105px;
+
+  font-family: var(--font-body);
+  color: var(--ink);
+  background: var(--bg);
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+}
+
+@media (max-width: 650px) {
+  :root {
+    --gutter: 28px;
+    --nav-height: 64px;
+    --section-space: 75px;
+  }
+}
+
+
+/* =========================================================
+   RESET & BASE
+   ========================================================= */
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
+html,
+body,
+#root {
+  min-height: 100%;
+}
+
 body {
   margin: 0;
   min-width: 320px;
+
+  background:
+    radial-gradient(
+      circle at 15% 5%,
+      rgba(109, 93, 252, 0.06),
+      transparent 30%
+    ),
+    var(--bg);
 }
 
-* {
-  box-sizing: border-box;
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+}
+
+h1,
+h2,
+h3,
+p {
+  margin-top: 0;
+}
+
+a {
+  color: inherit;
 }
 
 button,
-textarea,
-input {
+input,
+textarea {
   font: inherit;
 }
 
@@ -28,6 +136,25 @@ button {
 }
 
 ::selection {
-  background: #6d5dfc;
+  background: var(--purple);
   color: white;
+}
+
+/* One keyboard focus style for everything focusable.
+   The textarea opts out and shows its own focus state instead. */
+:focus-visible {
+  outline: 3px solid rgba(109, 93, 252, 0.28);
+  outline-offset: 3px;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
 }

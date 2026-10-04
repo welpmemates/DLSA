@@ -101,14 +101,7 @@ class BiLSTM(nn.Module):
         Positive Probability
     """
 
-    def __init__(
-        self,
-        vocab_size,
-        embed_dim,
-        rnn_hidden_size,
-        fc_hidden_size,
-        pad_idx
-    ):
+    def __init__(self, vocab_size, embed_dim, rnn_hidden_size, fc_hidden_size, pad_idx):
         super().__init__()
 
         self.embedding = nn.Embedding(
@@ -200,7 +193,7 @@ def load_vocabulary():
 # 6. LOAD MODEL
 # ============================================================
 
-def load_model(vocab):
+def load_model():
     """Load the trained BiLSTM checkpoint."""
 
     if not MODEL_PATH.exists():
@@ -235,12 +228,7 @@ def load_model(vocab):
 # 7. ENCODE REVIEW
 # ============================================================
 
-def encode_review(
-    text,
-    vocab,
-    unk_idx,
-    max_length
-):
+def encode_review(text, vocab, unk_idx, max_length):
     """
     Convert a raw review into the numerical representation expected
     by the trained model.
@@ -270,13 +258,7 @@ def encode_review(
 # 8. PREDICT SENTIMENT
 # ============================================================
 
-def predict_sentiment(
-    review,
-    model,
-    vocab,
-    unk_idx,
-    max_length
-):
+def predict_sentiment(review, model, vocab, unk_idx, max_length):
     """
     Predict the sentiment of a single movie review.
 
@@ -368,7 +350,7 @@ def main():
 
     print("Loading trained model...")
 
-    model, checkpoint = load_model(vocab)
+    model, checkpoint = load_model()
 
     unk_idx = checkpoint["unk_idx"]
     max_length = checkpoint["max_length"]

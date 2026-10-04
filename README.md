@@ -1,154 +1,218 @@
 # IMDB Sentiment Analysis using Bidirectional LSTM
 
-A sentiment analysis project that uses a **Bidirectional Long Short-Term Memory (BiLSTM)** neural network to classify IMDB movie reviews as **positive** or **negative**.
+A full-stack sentiment analysis application that uses a **Bidirectional Long Short-Term Memory (BiLSTM)** neural network to classify IMDB movie reviews as **Positive** or **Negative**.
 
-The model is trained on the **IMDB movie review dataset** and can be used after training to classify new reviews without retraining the model.
+The project includes the complete machine learning workflow — from text preprocessing and model training to evaluation and deployment through a **FastAPI backend** and **React frontend**.
 
----
-
-## Project Overview
-
-This project demonstrates an end-to-end NLP sentiment classification pipeline:
-
-```text
-IMDB Dataset
-     ↓
-Text Cleaning & Tokenization
-     ↓
-Vocabulary Construction
-     ↓
-Numerical Encoding
-     ↓
-Padding & Batch Preparation
-     ↓
-Embedding Layer
-     ↓
-Bidirectional LSTM
-     ↓
-Fully Connected Layers
-     ↓
-Sentiment Prediction
-```
-
-The project has two main purposes:
-
-1. **Training and experimentation** using the Jupyter/Google Colab notebook.
-2. **Using the trained model** to classify new movie reviews using `predict.py`.
+> **Test Accuracy: 82.91%**
 
 ---
 
-## Project Structure
+## Overview
+
+This project demonstrates an end-to-end Natural Language Processing (NLP) sentiment classification system.
+
+A user provides a movie review, and the trained BiLSTM model analyzes the text and predicts whether the review expresses a positive or negative sentiment.
+
+The project contains three main parts:
+
+1. **Model training** — implemented in the Jupyter/Google Colab notebook.
+2. **Model inference** — implemented through `predict.py` and the FastAPI backend.
+3. **Web application** — a React frontend that communicates with the FastAPI API.
+
+### Overall workflow
 
 ```text
-imdb-sentiment-lstm/
-│
-├── IMDB_BiLSTM_Sentiment_Analysis.ipynb
-│
-├── predict.py
-│
-├── models/
-│   ├── sentiment_bilstm.pth
-│   └── vocab.json
-│
-└── README.md
+                         TRAINING
+                            │
+                            ▼
+                  IMDB Movie Reviews
+                            │
+                            ▼
+                   Text Preprocessing
+                            │
+                            ▼
+                       Tokenization
+                            │
+                            ▼
+                  Vocabulary Creation
+                            │
+                            ▼
+                  Numerical Encoding
+                            │
+                            ▼
+                    BiLSTM Training
+                            │
+                            ▼
+                     Model Evaluation
+                            │
+                            ▼
+             sentiment_bilstm.pth + vocab.json
+                            │
+                            │
+                       INFERENCE
+                            │
+             ┌──────────────┴──────────────┐
+             │                             │
+             ▼                             ▼
+        predict.py                   FastAPI Backend
+                                           │
+                                           ▼
+                                    React Frontend
+                                           │
+                                           ▼
+                                   Sentiment Result
 ```
-
-### `IMDB_BiLSTM_Sentiment_Analysis.ipynb`
-
-This is the **training and experimentation notebook**.
-
-It contains the complete machine learning pipeline:
-
-- Loading the IMDB dataset
-- Splitting the training data into training and validation sets
-- Text preprocessing
-- Tokenization
-- Vocabulary construction
-- Converting text into numerical representations
-- Creating PyTorch DataLoaders
-- Defining the Bidirectional LSTM architecture
-- Training the model
-- Validation during training
-- Final test evaluation
-- Example sentiment predictions
-- Saving the trained model and vocabulary
-
-The notebook was designed to run in **Google Colab** and can use a Colab GPU for training.
-
-> You do **not** need to run the notebook to use the already-trained model included in this repository.
 
 ---
 
-## Pre-trained Model
+## Features
 
-The repository contains a trained model in:
+### Machine Learning
+
+- Bidirectional LSTM sentiment classifier
+- IMDB movie review dataset
+- Custom text tokenizer
+- Vocabulary-based numerical encoding
+- Sequence padding and truncation
+- Packed sequences for efficient LSTM processing
+- Binary sentiment classification
+- GPU training support through Google Colab
+- Saved model checkpoint and vocabulary
+- Final test accuracy of **82.91%**
+
+### Web Application
+
+- React-based frontend
+- FastAPI backend
+- Real-time sentiment prediction
+- Positive/negative probability visualization
+- Confidence visualization
+- API health status
+- Example reviews
+- Prediction history during the current session
+- Clickable prediction history
+- Responsive design
+- Keyboard accessibility
+- Model information section
+- Visual inference pipeline
+
+### CLI Inference
+
+- Standalone `predict.py`
+- Uses the same trained model and vocabulary
+- No retraining required
+- Interactive review input
+- Displays sentiment and confidence
+
+---
+
+## Demo
+
+The application provides a web interface where users can enter a movie review and receive a prediction.
+
+### Example
 
 ```text
-models/sentiment_bilstm.pth
-```
+Review:
+"This movie was absolutely fantastic. I loved every minute of it."
 
-This file contains the learned weights of the Bidirectional LSTM model.
+Prediction:
+Positive
 
-The corresponding vocabulary is stored in:
-
-```text
-models/vocab.json
-```
-
-The vocabulary is required because the model expects text to be converted into the same numerical token representation that was used during training.
-
-Therefore, both files should be kept together.
-
-```text
-models/
-├── sentiment_bilstm.pth
-└── vocab.json
+Confidence:
+~82%
 ```
 
 ---
 
 ## Model Architecture
 
-The sentiment classifier uses the following architecture:
+The project uses a **Bidirectional LSTM** architecture.
 
 ```text
 Input Review
-     ↓
-Tokenization
-     ↓
-Vocabulary / Token IDs
-     ↓
-Embedding
-     ↓
+     │
+     ▼
+Text Tokenization
+     │
+     ▼
+Vocabulary Lookup
+     │
+     ▼
+Token IDs
+     │
+     ▼
+Padding / Truncation
+     │
+     ▼
+Embedding Layer
+     │
+     ▼
 Bidirectional LSTM
-     ↓
-Concatenated Forward + Backward Hidden States
-     ↓
-Linear Layer
-     ↓
+     │
+     ▼
+Forward + Backward Hidden States
+     │
+     ▼
+Concatenation
+     │
+     ▼
+Fully Connected Layer
+     │
+     ▼
 ReLU
-     ↓
-Linear Layer
-     ↓
+     │
+     ▼
+Fully Connected Layer
+     │
+     ▼
 Sigmoid
-     ↓
+     │
+     ▼
 Positive Probability
+     │
+     ▼
+Positive / Negative
 ```
 
-### Configuration
+### Why Bidirectional LSTM?
+
+A standard LSTM processes a sequence primarily in one direction.
+
+A Bidirectional LSTM processes the sequence in both directions:
+
+```text
+Forward:
+I really loved this movie
+→ → → → → → →
+
+Backward:
+I really loved this movie
+← ← ← ← ← ← ←
+```
+
+This allows the model to use contextual information from both earlier and later words when forming its representation of the review.
+
+---
+
+## Model Configuration
 
 | Parameter | Value |
 |---|---:|
-| Embedding dimension | 20 |
-| LSTM hidden size | 64 |
+| Architecture | Bidirectional LSTM |
+| Embedding Dimension | 20 |
+| LSTM Hidden Size | 64 |
 | Bidirectional | Yes |
-| Fully connected hidden size | 64 |
-| Batch size | 64 |
-| Learning rate | 0.002 |
+| Fully Connected Hidden Size | 64 |
+| Batch Size | 64 |
+| Learning Rate | 0.002 |
 | Optimizer | Adam |
-| Loss function | Binary Cross Entropy |
-| Training epochs | 10 |
-| Maximum sequence length | 300 |
+| Loss Function | Binary Cross Entropy |
+| Epochs | 10 |
+| Maximum Sequence Length | 300 |
+| Output | Positive Probability |
+| Classification Type | Binary |
 
 ---
 
@@ -156,12 +220,18 @@ Positive Probability
 
 The project uses the **IMDB Movie Review Dataset**.
 
-The dataset contains labeled movie reviews:
+The dataset contains movie reviews labeled as either positive or negative.
 
-- `0` → Negative
-- `1` → Positive
+```text
+0 → Negative
+1 → Positive
+```
 
-For training, the original 25,000 labeled training reviews were divided into:
+### Dataset split
+
+The original training set contains 25,000 labeled reviews.
+
+These were divided into:
 
 ```text
 20,000 → Training
@@ -170,262 +240,782 @@ For training, the original 25,000 labeled training reviews were divided into:
 
 The separate 25,000-review test set was used for final evaluation.
 
+```text
+IMDB Dataset
+│
+├── Training Data
+│   ├── 20,000 Training Reviews
+│   └── 5,000 Validation Reviews
+│
+└── Test Data
+    └── 25,000 Test Reviews
+```
+
 ---
 
-## Training the Model
+## Text Preprocessing
 
-### Option 1 — Google Colab
+The same preprocessing pipeline used during training is used during inference.
 
-The recommended way to reproduce the training is **Google Colab**, since the notebook can use an available NVIDIA GPU runtime.
+The tokenizer performs:
 
-Open:
+1. HTML tag removal
+2. Lowercasing
+3. Emoticon extraction
+4. Non-word character normalization
+5. Tokenization
+
+Example:
+
+```text
+Original:
+"I absolutely LOVE this movie!!! :)"
+
+        ↓
+
+Tokenized:
+["i", "absolutely", "love", "this", "movie", ":)"]
+```
+
+The resulting tokens are converted into integer IDs using the vocabulary generated during training.
+
+### Vocabulary
+
+The trained vocabulary is stored in:
+
+```text
+models/vocab.json
+```
+
+The vocabulary contains special tokens including:
+
+```text
+<pad>
+<unk>
+```
+
+The saved vocabulary is used during inference instead of rebuilding the vocabulary.
+
+This ensures that the numerical representation of new reviews remains compatible with the trained model.
+
+---
+
+## Training
+
+The training pipeline is implemented in:
 
 ```text
 IMDB_BiLSTM_Sentiment_Analysis.ipynb
 ```
 
-in Google Colab.
+The notebook can be executed using **Google Colab** with a GPU runtime.
 
-Then:
+### Training environment
 
-1. Open the notebook in Google Colab.
-2. Select:
-
-```text
-Runtime → Change runtime type
-```
-
-3. Select:
+The completed training run used:
 
 ```text
-Hardware accelerator → GPU
+GPU: NVIDIA Tesla T4
+Epochs: 10
+Batch Size: 64
+Learning Rate: 0.002
+Optimizer: Adam
+Loss: Binary Cross Entropy
 ```
 
-4. Run the notebook cells from top to bottom.
-
-The notebook will:
-
-- Download the IMDB dataset.
-- Build the vocabulary.
-- Prepare the training, validation, and test sets.
-- Create the BiLSTM model.
-- Train the model for 10 epochs.
-- Evaluate the model on the test set.
-- Save the trained model and vocabulary.
-
-### Required packages
-
-The notebook uses:
+### Training workflow
 
 ```text
-PyTorch
-Hugging Face Datasets
+Load IMDB Dataset
+       ↓
+Train / Validation Split
+       ↓
+Tokenization
+       ↓
+Vocabulary Construction
+       ↓
+Numerical Encoding
+       ↓
+Padding
+       ↓
+DataLoaders
+       ↓
+BiLSTM Model
+       ↓
+Training
+       ↓
+Validation
+       ↓
+Test Evaluation
+       ↓
+Save Model + Vocabulary
 ```
-
-The IMDB dataset is loaded using:
-
-```python
-from datasets import load_dataset
-```
-
-The project does **not** use `torchtext`.
 
 ---
 
 ## Training Results
 
-The included model was trained for **10 epochs** using a Google Colab GPU runtime.
-
-The training run used an NVIDIA Tesla T4 GPU.
-
-Final test performance:
+The final trained model achieved:
 
 ```text
 Test Accuracy: 82.91%
 Test Loss:     0.7689
 ```
 
-These results correspond to the pre-trained model included in:
+These results correspond to the trained checkpoint included in the repository:
 
 ```text
 models/sentiment_bilstm.pth
+```
+
+The model was trained for 10 epochs.
+
+> The reported accuracy is the result of the completed training run and should not be interpreted as the expected accuracy for every possible retraining run.
+
+---
+
+# Project Structure
+
+```text
+imdb-sentiment-lstm/
+│
+├── backend/
+│   ├── main.py
+│   └── model.py
+│
+├── frontend/
+│   ├── src/
+│   │   ├── components/
+│   │   │   ├── Analyzer.jsx
+│   │   │   ├── Footer.jsx
+│   │   │   ├── ModelStats.jsx
+│   │   │   ├── Navbar.jsx
+│   │   │   ├── Pipeline.jsx
+│   │   │   ├── PredictionHistory.jsx
+│   │   │   └── PredictionResult.jsx
+│   │   │
+│   │   ├── data/
+│   │   │   └── examples.js
+│   │   │
+│   │   ├── App.jsx
+│   │   ├── App.css
+│   │   ├── index.css
+│   │   └── main.jsx
+│   │
+│   └── package.json
+│
+├── models/
+│   ├── sentiment_bilstm.pth
+│   └── vocab.json
+│
+├── IMDB_BiLSTM_Sentiment_Analysis.ipynb
+├── predict.py
+├── .gitignore
+└── README.md
 ```
 
 ---
 
-# Using the Pre-trained Model
+# File Descriptions
 
-If you only want to use the sentiment classifier, **you do not need to train the model again**.
+## `IMDB_BiLSTM_Sentiment_Analysis.ipynb`
 
-You only need:
+The complete training and experimentation notebook.
 
-```text
-models/sentiment_bilstm.pth
-models/vocab.json
-predict.py
-```
+It contains:
 
-The `predict.py` script loads the trained model and vocabulary and provides an interface for classifying new movie reviews.
+- Dataset loading
+- Data splitting
+- Text preprocessing
+- Tokenization
+- Vocabulary construction
+- Numerical encoding
+- DataLoader creation
+- BiLSTM definition
+- Training
+- Validation
+- Test evaluation
+- Prediction examples
+- Model saving
+
+The notebook is intended primarily for training and experimentation.
+
+You **do not need to run the notebook** to use the already-trained model included in this repository.
+
+---
+
+## `models/sentiment_bilstm.pth`
+
+The trained PyTorch model checkpoint.
+
+It contains the learned parameters of the BiLSTM sentiment classifier.
+
+---
+
+## `models/vocab.json`
+
+The vocabulary generated during training.
+
+It is required to convert input text into the same token IDs expected by the trained model.
+
+The model checkpoint and vocabulary should therefore be kept together.
+
+---
+
+## `backend/model.py`
+
+Contains the backend-side model implementation.
+
+It handles:
+
+- Tokenization
+- Vocabulary loading
+- Model definition
+- Model checkpoint loading
+- Review encoding
+- Sentiment prediction
+
+---
+
+## `backend/main.py`
+
+FastAPI application responsible for serving the trained model.
+
+It provides:
+
+- API endpoints
+- Request validation
+- CORS configuration
+- Health checking
+- Sentiment prediction
 
 ---
 
 ## `predict.py`
 
-`predict.py` is the **inference/demo script**.
+Standalone command-line inference script.
 
-Unlike the notebook, it does not train the model.
-
-Its purpose is to:
-
-1. Load the trained `.pth` model.
-2. Load the vocabulary.
-3. Tokenize a new review.
-4. Convert the review into token IDs.
-5. Run the review through the BiLSTM.
-6. Calculate the positive-class probability.
-7. Display the predicted sentiment.
-
-The workflow is:
+It loads:
 
 ```text
-User enters review
-       ↓
-Tokenization
-       ↓
-Vocabulary lookup
-       ↓
-Trained BiLSTM
-       ↓
-Probability
-       ↓
-Positive / Negative
+models/sentiment_bilstm.pth
+models/vocab.json
+```
+
+and allows users to classify reviews directly from the terminal.
+
+---
+
+## `frontend/`
+
+The React/Vite frontend for the web application.
+
+The frontend provides:
+
+- Review input
+- Example reviews
+- Sentiment prediction display
+- Confidence visualization
+- Probability visualization
+- Prediction history
+- Model information
+- Inference pipeline
+- API status
+- Responsive UI
+
+---
+
+# Installation
+
+## Prerequisites
+
+Make sure the following are installed:
+
+- Python 3
+- `uv`
+- Node.js
+- npm
+
+The project can be run locally without a GPU because inference uses the CPU when a CUDA device is unavailable.
+
+---
+
+# Backend Setup
+
+From the project root:
+
+```bash
+cd backend
+```
+
+If you are using the project's existing `uv` environment, make sure the required backend dependencies are installed:
+
+```bash
+uv pip install torch fastapi uvicorn
+```
+
+Then start the FastAPI server:
+
+```bash
+uv run uvicorn main:app --reload --port 8000
+```
+
+The backend will be available at:
+
+```text
+http://localhost:8000
+```
+
+### Health check
+
+Open:
+
+```text
+http://localhost:8000/health
+```
+
+A healthy response should look similar to:
+
+```json
+{
+  "status": "healthy",
+  "model_loaded": true,
+  "device": "cpu"
+}
 ```
 
 ---
 
-## Running `predict.py`
+# Frontend Setup
 
-After setting up the project environment, run:
+Open a second terminal and go to the frontend:
+
+```bash
+cd frontend
+```
+
+Install the frontend dependencies:
+
+```bash
+npm install
+```
+
+Start the Vite development server:
+
+```bash
+npm run dev
+```
+
+The frontend will normally be available at:
+
+```text
+http://localhost:5173
+```
+
+The frontend communicates with the FastAPI backend running on:
+
+```text
+http://localhost:8000
+```
+
+---
+
+# Running the Full Application
+
+You need two development servers running.
+
+### Terminal 1 — Backend
+
+```bash
+cd backend
+uv run uvicorn main:app --reload --port 8000
+```
+
+### Terminal 2 — Frontend
+
+```bash
+cd frontend
+npm run dev
+```
+
+Then open the frontend URL shown by Vite, normally:
+
+```text
+http://localhost:5173
+```
+
+---
+
+# Using the Web Application
+
+1. Start the FastAPI backend.
+2. Start the React frontend.
+3. Open the frontend in your browser.
+4. Enter a movie review.
+5. Click **Analyze Review**.
+6. The frontend sends the review to the FastAPI backend.
+7. The backend runs the trained BiLSTM.
+8. The prediction is returned to the frontend.
+9. The frontend displays:
+   - Sentiment
+   - Confidence
+   - Positive probability
+   - Negative probability
+   - Analyzed review
+
+Predictions are also stored in the browser session as **Prediction History**.
+
+The history is not persisted to a database or local storage.
+
+---
+
+# API
+
+The backend exposes a small REST API.
+
+## `GET /`
+
+Basic API information.
+
+```http
+GET /
+```
+
+---
+
+## `GET /health`
+
+Checks whether the backend and model are available.
+
+```http
+GET /health
+```
+
+Example:
+
+```json
+{
+  "status": "healthy",
+  "model_loaded": true,
+  "device": "cpu"
+}
+```
+
+---
+
+## `POST /predict`
+
+Predicts the sentiment of a movie review.
+
+```http
+POST /predict
+```
+
+### Request
+
+```json
+{
+  "review": "This movie was absolutely fantastic and I loved every minute of it."
+}
+```
+
+### Response
+
+```json
+{
+  "sentiment": "Positive",
+  "positive_probability": 0.82,
+  "confidence": 0.82
+}
+```
+
+For a negative review, the response can look like:
+
+```json
+{
+  "sentiment": "Negative",
+  "positive_probability": 0.000057,
+  "confidence": 0.999943
+}
+```
+
+The exact probability values depend on the input review.
+
+---
+
+# CLI Inference
+
+The model can also be used without the web application.
+
+From the project root:
 
 ```bash
 uv run python predict.py
 ```
 
-The script will prompt you to enter a movie review.
+The script will prompt you for a review.
 
-For example:
+Example:
 
 ```text
 Enter a movie review:
 > This movie was absolutely fantastic. I loved every minute of it.
 ```
 
-The model will then produce a prediction such as:
+The model then displays the predicted sentiment and confidence.
 
-```text
-Prediction: Positive
-Confidence: 95.23%
-```
+You can continue entering reviews until you exit the program.
 
-You can then enter another review without retraining the model.
+The CLI does **not** retrain the model.
 
 ---
 
-## Training vs. Inference
+# Training vs. Inference
 
-The notebook and `predict.py` serve different purposes.
+The project separates model training from model usage.
 
-| Component | Purpose | Requires Training? |
-|---|---|---|
-| `IMDB_BiLSTM_Sentiment_Analysis.ipynb` | Train, evaluate and experiment with the model | Yes |
+| Component | Purpose | Training Required? |
+|---|---|---:|
+| `IMDB_BiLSTM_Sentiment_Analysis.ipynb` | Train and evaluate the model | Yes |
 | `models/sentiment_bilstm.pth` | Store trained model weights | No |
-| `models/vocab.json` | Store the training vocabulary | No |
-| `predict.py` | Classify new reviews | No |
+| `models/vocab.json` | Store training vocabulary | No |
+| `predict.py` | CLI inference | No |
+| `backend/model.py` | Backend inference logic | No |
+| `backend/main.py` | API server | No |
+| `frontend/` | Web interface | No |
 
-In other words:
+Therefore, users who only want to run the application **do not need to retrain the model**.
+
+---
+
+# Inference Pipeline
+
+When a user submits a review through the application:
 
 ```text
-                 TRAINING
-                    │
-                    ▼
-IMDB_BiLSTM_Sentiment_Analysis.ipynb
-                    │
-                    ▼
-          sentiment_bilstm.pth
-                    +
-               vocab.json
-                    │
-                    ▼
-                 INFERENCE
-                    │
-                    ▼
-              predict.py
-                    │
-                    ▼
-        Positive / Negative
+User Review
+     │
+     ▼
+Frontend
+     │
+     │ POST /predict
+     ▼
+FastAPI Backend
+     │
+     ▼
+Text Cleaning
+     │
+     ▼
+Tokenization
+     │
+     ▼
+Vocabulary Lookup
+     │
+     ▼
+Unknown Token Handling
+     │
+     ▼
+Padding / Truncation
+     │
+     ▼
+Embedding
+     │
+     ▼
+Bidirectional LSTM
+     │
+     ▼
+Forward + Backward Hidden States
+     │
+     ▼
+Fully Connected Layers
+     │
+     ▼
+Sigmoid
+     │
+     ▼
+Positive Probability
+     │
+     ▼
+Sentiment + Confidence
+     │
+     ▼
+React Frontend
 ```
 
 ---
 
-## Local Setup
+# Why Save the Vocabulary?
 
-If you want to run the inference script locally, create a Python environment and install PyTorch.
+The model does not directly understand words.
 
-Using `uv`:
+Each token must first be converted into an integer ID.
 
-```bash
-uv init
-uv add torch
-```
-
-Then make sure your project has:
+For example:
 
 ```text
-models/
-├── sentiment_bilstm.pth
-└── vocab.json
-
-predict.py
+"great movie"
 ```
 
-Run:
+might become something conceptually similar to:
 
-```bash
-uv run python predict.py
+```text
+[152, 847]
 ```
 
-The inference script only needs the trained model and vocabulary. The IMDB dataset is not required for making predictions.
+The exact IDs depend on the vocabulary created during training.
+
+If a different vocabulary were created during inference, the same words could receive different IDs, causing the model to receive incorrect input.
+
+Therefore:
+
+```text
+sentiment_bilstm.pth
+        +
+    vocab.json
+```
+
+must be used together.
 
 ---
 
-## Important Note About the Model
+# Limitations
 
-The model is a neural network trained specifically for **binary sentiment classification of movie reviews**.
+This project is intended as an educational and demonstration system.
 
-It predicts:
+### Dataset limitation
+
+The model was trained specifically on the IMDB movie review dataset.
+
+Its predictions may not generalize equally well to:
+
+- tweets
+- news articles
+- product reviews
+- social media posts
+- technical writing
+- informal conversations
+
+### Binary classification
+
+The model predicts only:
 
 ```text
 Positive
 Negative
 ```
 
-It should therefore be treated as a demonstration of sentiment classification rather than a general-purpose sentiment or language model.
+It does not classify neutral sentiment or multiple sentiment categories.
+
+### Context and sarcasm
+
+Like many sentiment classifiers, the model can have difficulty with:
+
+- sarcasm
+- irony
+- ambiguous statements
+- mixed opinions
+- unusual writing styles
+- very long-range contextual relationships
+
+### Model size
+
+The model is intentionally relatively small so that it can be trained and used locally without requiring a large GPU.
 
 ---
 
-## Technologies Used
+# Technologies Used
 
-- **Python**
-- **PyTorch**
-- **Hugging Face Datasets**
-- **Google Colab**
-- **Bidirectional LSTM**
-- **IMDB Movie Review Dataset**
+### Machine Learning
+
+- Python
+- PyTorch
+- Bidirectional LSTM
+- Binary Cross Entropy
+- Adam Optimizer
+
+### Dataset
+
+- IMDB Movie Review Dataset
+- Hugging Face Datasets
+
+### Backend
+
+- FastAPI
+- Uvicorn
+- PyTorch
+
+### Frontend
+
+- React
+- Vite
+- JavaScript
+- CSS
+
+### Development
+
+- Google Colab
+- NVIDIA Tesla T4
+- `uv`
+- npm
 
 ---
 
-## Project Goal
+# Key Results
 
-The goal of this project is to demonstrate how a recurrent neural network can process sequential text and learn to classify movie reviews according to their sentiment.
+```text
+┌─────────────────────────────┐
+│        MODEL RESULTS        │
+├─────────────────────────────┤
+│ Architecture: BiLSTM        │
+│ Epochs:      10             │
+│ Test Accuracy: 82.91%       │
+│ Test Loss:     0.7689       │
+└─────────────────────────────┘
+```
 
-The project covers the complete workflow from raw text preprocessing to model training, evaluation, and real-world inference.
+The trained model provides a complete demonstration of taking raw movie-review text and transforming it into a binary sentiment prediction through a recurrent neural network.
+
+---
+
+# Project Goals
+
+The primary goals of this project are to demonstrate:
+
+- Natural Language Processing
+- Text preprocessing
+- Tokenization
+- Vocabulary construction
+- Sequence encoding
+- Embedding layers
+- Recurrent neural networks
+- Bidirectional LSTMs
+- Model training and validation
+- Model evaluation
+- Model serialization
+- Backend API development
+- Frontend integration
+- End-to-end machine learning deployment
+
+The project therefore covers the complete path from:
+
+```text
+Raw Text
+   ↓
+NLP Preprocessing
+   ↓
+Neural Network
+   ↓
+Prediction
+   ↓
+REST API
+   ↓
+Web Application
+```
+
+---
+
+# License
+
+This project is intended for educational and academic purposes.
+
+If you reuse or modify this project, please provide appropriate attribution to the original project and its author.
