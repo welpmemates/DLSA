@@ -1,4 +1,4 @@
-# IMDB Sentiment Analysis using Bidirectional LSTM
+# DLSA (Deep Learning Sentiment Analyzer)
 
 A full-stack sentiment analysis application that uses a **Bidirectional Long Short-Term Memory (BiLSTM)** neural network to classify IMDB movie reviews as **Positive** or **Negative**.
 
@@ -377,7 +377,7 @@ The model was trained for 10 epochs.
 # Project Structure
 
 ```text
-imdb-sentiment-lstm/
+DLSA/
 │
 ├── backend/
 │   ├── main.py
